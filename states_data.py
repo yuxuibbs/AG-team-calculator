@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from scipy.stats import linregress
 import json
 
 import pprint
@@ -17,7 +18,7 @@ players = {
     "Elementary": []
 }
 
-PREZ_TOURNAMENT_DAYS = ['20-Oct', '27-Oct', '3-Nov', '10-Nov', '17-Nov', '1-Dec', '8-Dec', '15-Dec', '22-Dec']
+PREZ_TOURNAMENT_DAYS = ["28-Sep_1", "5-Oct_2", "12-Oct_1", "26-Oct_1", "2-Nov_2", "9-Nov_1", "16-Nov_2", "30-Nov_1", "14-Dec_2", "21-Dec_1", "11-Jan_2"]
 SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
 CUBE_GAMES = ['EQ', 'OS', 'Ling']
 
@@ -168,8 +169,14 @@ def clean_prez_data(person_data, grade):
     global HIGHEST_PREZ_MIDDLE
     if 'Prez' in person_data:
         prez_scores = []
+        first_half = []
+        second_half = []
         for prez_date, prez_score in person_data['Prez'].items():
             prez_scores.append(prez_score)
+            if prez_date[-1] == "1":
+                first_half.append(prez_score)
+            else:
+                second_half.append(prez_score)
         person_data['Prez']['prez_scores'] = prez_scores
         person_data['Prez']['prez_mean'] = float(np.mean(prez_scores))
         person_data['Prez']['prez_total'] = int(np.sum(prez_scores))
@@ -222,20 +229,21 @@ def calculate_sweeps(person_data, grade):
             scaled_score = (float(person_data['Prez']['prez_mean']) / HIGHEST_PREZ_MIDDLE) * 25
         person_data['Prez']['prez_scaled'] = scaled_score
         person_data['sweeps_calculation']['prez'] = scaled_score
-        person_data['sweeps'] += scaled_score
+        person_data['sweeps'] += scaled_score 
     if 'Rankings' in person_data:
         if grade == 6:
             person_data['adjusted_sweeps'] = \
                 person_data['sweeps'] + \
-                (((NUM_ELEMENTARY * 2) - person_data['Rankings']['total_rank']) * 0.5) + \
-                ((HIGHEST_MEAN_TABLE_ELEMENTARY - person_data['Saturday_Tournaments']['saturday_mean_table']) * 0.25) + \
+                (((NUM_ELEMENTARY * 2) - person_data['Rankings']['total_rank']) * 2) + \
+                (HIGHEST_MEAN_TABLE_ELEMENTARY - person_data['Saturday_Tournaments']['saturday_mean_table']) + \
                 (person_data['Saturday_Tournaments']['saturday_top_3_mean'])
         else:
             person_data['adjusted_sweeps'] = \
                 person_data['sweeps'] + \
-                (((NUM_MIDDLE * 2) - person_data['Rankings']['total_rank']) * 0.25) + \
-                ((HIGHEST_MEAN_TABLE_MIDDLE - person_data['Saturday_Tournaments']['saturday_mean_table']) * 0.25) + \
+                (((NUM_MIDDLE * 2) - person_data['Rankings']['total_rank']) * 2) + \
+                (HIGHEST_MEAN_TABLE_MIDDLE - person_data['Saturday_Tournaments']['saturday_mean_table']) + \
                 (person_data['Saturday_Tournaments']['saturday_top_3_mean'])
+
 
 def clean_data():
     for grade, data in qualified_players.items():
@@ -259,10 +267,10 @@ def split_into_divisions():
 
 ################################################################################
 # Main
-get_saturday_tournament_data('2017-2018/saturday_tournaments.csv')
-get_prez_progression('2017-2018/prez_progression.csv')
-get_cube_game_scores('2017-2018/friday_tournaments.csv')
-get_rankings('2017-2018/rankings.csv')
+get_saturday_tournament_data('2018-2019/saturday_tournaments.csv')
+get_prez_progression('2018-2019/prez_progression.csv')
+get_cube_game_scores('2018-2019/friday_tournaments.csv')
+get_rankings('2018-2019/rankings.csv')
 
 clean_data()
 split_into_divisions()

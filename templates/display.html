@@ -18,27 +18,30 @@
                     Adjusted Sweeps
                 </th>
                 <th onclick="sortTable(3)">
-                    Friday Rank
+                    Total Sweeps
                 </th>
                 <th onclick="sortTable(4)">
-                    Saturday Rank
+                    Friday Rank
                 </th>
                 <th onclick="sortTable(5)">
-                    Total Rank
+                    Saturday Rank
                 </th>
                 <th onclick="sortTable(6)">
-                    EQ
+                    Total Rank
                 </th>
                 <th onclick="sortTable(7)">
-                    OS
+                    EQ
                 </th>
                 <th onclick="sortTable(8)">
-                    Ling
+                    OS
                 </th>
                 <th onclick="sortTable(9)">
-                    Prez
+                    Ling
                 </th>
                 <th onclick="sortTable(10)">
+                    Prez
+                </th>
+                <th onclick="sortTable(11)">
                     Saturday Tournament Top 3 mean
                 </th>
                 <th>
@@ -56,7 +59,7 @@
                 <th>
                     January Tournament
                 </th>
-                <th onclick="sortTable(16)">
+                <th onclick="sortTable(17)">
                     Worksheets
                 </th>
                 <!-- <th>
@@ -74,6 +77,11 @@
                 <td title="{{ person['sweeps_calculation'] }}">
                     {% if person['adjusted_sweeps'] %}
                         {{ person['adjusted_sweeps']|round(4) }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['sweeps_calculation'] }}">
+                    {% if person['adjusted_sweeps'] %}
+                        {{ (person['adjusted_sweeps'] + person['sweeps']) | round(4) }}
                     {% endif %}
                 </td>
                 <td>
