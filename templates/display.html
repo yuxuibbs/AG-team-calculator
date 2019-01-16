@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>
+    {{ level }}
+</h1>
+<div class="row">
+    <div class="col-sm-9 table-responsive">
+        <table class="table table-striped" id="myTable">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th onclick="sortTable(1)">
+                    Sweeps
+                </th>
+                <th onclick="sortTable(2)">
+                    Adjusted Sweeps
+                </th>
+                <th onclick="sortTable(3)">
+                    Friday Rank
+                </th>
+                <th onclick="sortTable(4)">
+                    Saturday Rank
+                </th>
+                <th onclick="sortTable(5)">
+                    Total Rank
+                </th>
+                <th onclick="sortTable(6)">
+                    EQ
+                </th>
+                <th onclick="sortTable(7)">
+                    OS
+                </th>
+                <th onclick="sortTable(8)">
+                    Ling
+                </th>
+                <th onclick="sortTable(9)">
+                    Prez
+                </th>
+                <th onclick="sortTable(10)">
+                    Saturday Tournament Top 3 mean
+                </th>
+                <th>
+                    September Tournament
+                </th>
+                <th>
+                    October Tournament
+                </th>
+                <th>
+                    November Tournament
+                </th>
+                <th>
+                    December Tournament
+                </th>
+                <th>
+                    January Tournament
+                </th>
+                <th onclick="sortTable(16)">
+                    Worksheets
+                </th>
+                <!-- <th>
+                    Challenge Matches
+                </th> -->
+            </tr>
+            {% for person in data %}
+            <tr>
+                <td class="person_info" title="{{ person['all'] }}">
+                    {{ person['name'] }}
+                </td>
+                <td title="{{ person['sweeps_calculation'] }}">
+                    {{ person['sweeps']|round(4) }}
+                </td>
+                <td title="{{ person['sweeps_calculation'] }}">
+                    {% if person['adjusted_sweeps'] %}
+                        {{ person['adjusted_sweeps']|round(4) }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person['friday_rank'] %}
+                        {{ person['friday_rank'] }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person['saturday_rank'] %}
+                        {{ person['saturday_rank'] }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person['total_rank'] %}
+                        {{ person['total_rank'] }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['friday_eq_data'] }}">
+                    {% if person['friday_eq'] %}
+                        {{ person['friday_eq']|round(4) }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['friday_os_data'] }}">
+                    {% if person['friday_os'] %}
+                        {{ person['friday_os']|round(4) }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['friday_ling_data'] }}">
+                    {% if person['friday_ling'] %}
+                        {{ person['friday_ling']|round(4) }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['prez_data'] }}">
+                    {% if person['prez_mean'] %}
+                        {{ person['prez_mean']|round(4) }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['saturday_data'] }}">
+                    {{ person['saturday_top_3_mean']|round(4) }}
+                </td>
+                <td title="{{ person['saturday_data'] }}">
+                    {{ person['Sept_saturday'] }}
+                </td>
+                <td title="{{ person['saturday_data'] }}">
+                    {{ person['Oct_saturday'] }}
+                </td>
+                <td title="{{ person['saturday_data'] }}">
+                    {{ person['Nov_saturday'] }}
+                </td>
+                <td title="{{ person['saturday_data'] }}">
+                    {{ person['Dec_saturday'] }}
+                </td>
+                <td title="{{ person['saturday_data'] }}">
+                    {{ person['Jan_saturday'] }}
+                </td>
+                <td title="{{ person['worksheets_calculation'] }}">
+                    {% if person['worksheets'] %}
+                        {{ person['worksheets']|float(2) }}
+                    {% endif %}
+                </td>
+                <!-- <td title="{{ person['challenge_matches'] }}">
+                    {{ person['challenge_matches'] }}
+                </td> -->
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="col-sm-3">
+        <pre id="displayLocation">
+        </pre>
+    </div>
+</div>
+{% endblock content %}

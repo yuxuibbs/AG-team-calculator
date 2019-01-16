@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# other files
+2017-2018/
+2018-2019/
+data.js
+data.json
