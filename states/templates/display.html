@@ -42,7 +42,7 @@
                     Prez
                 </th>
                 <th onclick="sortTable(11)">
-                    Saturday Tournament Top 3 mean
+                    Saturday Top 3 mean
                 </th>
                 <th>
                     September Tournament
@@ -123,19 +123,19 @@
                     {{ person['saturday_top_3_mean']|round(4) }}
                 </td>
                 <td title="{{ person['saturday_data'] }}">
-                    {{ person['Sept_saturday'] }}
+                    {{ person['Sept_saturday']|safe }}
                 </td>
                 <td title="{{ person['saturday_data'] }}">
-                    {{ person['Oct_saturday'] }}
+                    {{ person['Oct_saturday']|safe }}
                 </td>
                 <td title="{{ person['saturday_data'] }}">
-                    {{ person['Nov_saturday'] }}
+                    {{ person['Nov_saturday']|safe }}
                 </td>
                 <td title="{{ person['saturday_data'] }}">
-                    {{ person['Dec_saturday'] }}
+                    {{ person['Dec_saturday']|safe }}
                 </td>
                 <td title="{{ person['saturday_data'] }}">
-                    {{ person['Jan_saturday'] }}
+                    {{ person['Jan_saturday']|safe }}
                 </td>
                 <td title="{{ person['worksheets_calculation'] }}">
                     {% if person['worksheets'] %}

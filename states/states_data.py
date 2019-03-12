@@ -19,7 +19,7 @@ players = {
 }
 
 PREZ_TOURNAMENT_DAYS = ["28-Sep_1", "5-Oct_2", "12-Oct_1", "26-Oct_1", "2-Nov_2", "9-Nov_1", "16-Nov_2", "30-Nov_1", "14-Dec_2", "21-Dec_1", "11-Jan_2"]
-SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
+SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
 CUBE_GAMES = ['EQ', 'OS', 'Ling']
 
 HIGHEST_PREZ_ELEMENTARY = 0
@@ -180,6 +180,8 @@ def clean_prez_data(person_data, grade):
         person_data['Prez']['prez_scores'] = prez_scores
         person_data['Prez']['prez_mean'] = float(np.mean(prez_scores))
         person_data['Prez']['prez_total'] = int(np.sum(prez_scores))
+        person_data['Prez']['prez_first_half'] = first_half
+        person_data['Prez']['prez_second_half'] = second_half
         if grade == 6:
             if person_data['Prez']['prez_mean'] > HIGHEST_PREZ_ELEMENTARY:
                 HIGHEST_PREZ_ELEMENTARY = person_data['Prez']['prez_mean']
@@ -220,7 +222,7 @@ def calculate_sweeps(person_data, grade):
                 person_data['sweeps'] += scaled_score
                 person_data['Friday_Tournaments'][game + '_scaled'] = scaled_score
                 person_data['sweeps_calculation'][game] = scaled_score
-
+        person_data['sweeps_no_prez'] = person_data['sweeps']
     if 'Prez' in person_data:
         # scale to 25 relative to highest score
         if grade == 6:
@@ -269,7 +271,7 @@ def split_into_divisions():
 # Main
 get_saturday_tournament_data('2018-2019/saturday_tournaments.csv')
 get_prez_progression('2018-2019/prez_progression.csv')
-get_cube_game_scores('2018-2019/friday_tournaments.csv')
+get_cube_game_scores('2018-2019/individual_rankings.csv')
 get_rankings('2018-2019/rankings.csv')
 
 clean_data()

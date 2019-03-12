@@ -22,8 +22,9 @@ def get_data(level, data):
         # name
         temp_data['name'] = person['Name']
         # sweeps
-        temp_data['sweeps'] = person['sweeps']
-        temp_data['sweeps_calculation'] = json.dumps(person['sweeps_calculation'], indent=4, sort_keys=True)
+        temp_data['Friday_sweeps'] = person['Friday_sweeps']
+        temp_data['Friday_sweeps_calculation'] = json.dumps(person['Friday_sweeps_calculation'], indent=4, sort_keys=True)
+        # temp_data['Friday_sweeps_no_prez'] = person['Friday_sweeps_no_prez']
         # worksheets
         if 'Worksheets' in person:
             temp_data['worksheets'] = person['Worksheets']['total']
@@ -72,7 +73,9 @@ def get_data(level, data):
                 "prez_scores": person['Prez']['prez_scores'],
                 "prez_mean": person['Prez']['prez_mean'],
                 "prez_total": person['Prez']['prez_total'],
-                "prez_scaled": person['Prez']['prez_scaled']
+                "prez_scaled": person['Prez']['prez_scaled'],
+                "prez_1st_half": person['Prez']['prez_first_half'],
+                "prez_2nd_half": person['Prez']['prez_second_half']
             }
             temp_data['prez_data'] = json.dumps(prez_data, indent=4, sort_keys=True)
         # saturday tournaments
@@ -80,7 +83,7 @@ def get_data(level, data):
             for month in SATURDAY_TOURNAMENT_MONTHS:
                 temp_data['saturday_top_3_mean'] = person['Saturday_Tournaments']['saturday_top_3_mean']
                 if month in person['Saturday_Tournaments']:
-                    temp_data[month + '_saturday'] = str(person['Saturday_Tournaments'][month]['score']) + ' at table ' + str(person['Saturday_Tournaments'][month]['table']) + " " + person['Saturday_Tournaments'][month]['game']
+                    temp_data[month + '_saturday'] = '<strong>' + str(person['Saturday_Tournaments'][month]['score']) + '</strong> at table <strong>' + str(person['Saturday_Tournaments'][month]['table']) + "</strong> " + person['Saturday_Tournaments'][month]['game']
                     temp_data['saturday_data'] = json.dumps({
                                                 'scores': person['Saturday_Tournaments']['saturday_scores'],
                                                 'num': person['Saturday_Tournaments']['num_sat_tournaments'],
@@ -94,7 +97,7 @@ def get_data(level, data):
             temp_data['friday_rank'] = int(person['Rankings']['friday_rank'])
             temp_data['saturday_rank'] = int(person['Rankings']['saturday_rank'])
             temp_data['total_rank'] = int(person['Rankings']['total_rank'])
-            temp_data['adjusted_sweeps'] = person['adjusted_sweeps']
+            temp_data['adjusted_Friday_sweeps'] = person['adjusted_Friday_sweeps']
         # challenge matches
         if 'Challenge_Matches' in person:
             temp_data['challenge_matches'] = json.dumps(person['Challenge_Matches'], indent=4, sort_keys=True)
