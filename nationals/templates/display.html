@@ -11,37 +11,49 @@
                 <th>
                     Name
                 </th>
-                <th onclick="sortTable(1)">
-                    Friday Sweeps
+                <th>
+                    States Team Number
                 </th>
                 <th onclick="sortTable(2)">
-                    Adjusted Friday Sweeps
+                    Friday Sweeps
                 </th>
                 <th onclick="sortTable(3)">
-                    Total Friday Sweeps
+                    Adjusted Friday Sweeps
                 </th>
                 <th onclick="sortTable(4)">
-                    Friday Rank
+                    States Sweeps
                 </th>
                 <th onclick="sortTable(5)">
-                    Saturday Rank
+                    Adjusted States Sweeps
                 </th>
                 <th onclick="sortTable(6)">
-                    Total Rank
+                    Total Sweeps
                 </th>
                 <th onclick="sortTable(7)">
-                    EQ
+                    States Rank
                 </th>
                 <th onclick="sortTable(8)">
-                    OS
+                    Friday Rank
                 </th>
                 <th onclick="sortTable(9)">
-                    Ling
+                    Saturday Rank
                 </th>
                 <th onclick="sortTable(10)">
-                    Prez
+                    Total Rank
                 </th>
                 <th onclick="sortTable(11)">
+                    EQ
+                </th>
+                <th onclick="sortTable(12)">
+                    OS
+                </th>
+                <th onclick="sortTable(13)">
+                    Ling
+                </th>
+                <th onclick="sortTable(14)">
+                    Prez
+                </th>
+                <th onclick="sortTable(15)">
                     Saturday Top 3 mean
                 </th>
                 <th>
@@ -59,7 +71,7 @@
                 <th>
                     January Tournament
                 </th>
-                <th onclick="sortTable(17)">
+                <th onclick="sortTable(21)">
                     Worksheets
                 </th>
                 <!-- <th>
@@ -71,17 +83,35 @@
                 <td class="person_info" title="{{ person['all'] }}">
                     {{ person['name'] }}
                 </td>
+                <td>
+                    {{ person['team'] }}
+                </td>
                 <td title="{{ person['Friday_sweeps_calculation'] }}">
-                    {{ person['Friday_sweeps']|round(4) }}
+                    {{ person['Friday_sweeps'] | round(4) }}
                 </td>
                 <td title="{{ person['Friday_sweeps_calculation'] }}">
                     {% if person['adjusted_Friday_sweeps'] %}
-                        {{ person['adjusted_Friday_sweeps']|round(4) }}
+                        {{ person['adjusted_Friday_sweeps'] | round(4) }}
                     {% endif %}
                 </td>
-                <td title="{{ person['Friday_sweeps_calculation'] }}">
-                    {% if person['adjusted_Friday_sweeps'] %}
-                        {{ (person['adjusted_Friday_sweeps'] + person['Friday_sweeps']) | round(4) }}
+                <td title="{{ person['States'] }}">
+                    {% if person['States_sweeps'] %}
+                        {{ person['States_sweeps'] | round(4) }}
+                    {% endif %}
+                </td>
+                <td title="{{ person['States'] }}">
+                    {% if person['adjusted_States_sweeps'] %}
+                        {{ person['adjusted_States_sweeps'] | round(4) }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person['adjusted_States_sweeps'] %}
+                        {{ (person['adjusted_Friday_sweeps'] + person['Friday_sweeps'] + person['adjusted_States_sweeps'] + person['States_sweeps']) | round(4) }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if person['states_rank'] %}
+                        {{ person['states_rank'] }}
                     {% endif %}
                 </td>
                 <td>

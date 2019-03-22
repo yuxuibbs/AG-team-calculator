@@ -21,10 +21,13 @@ def get_data(level, data):
         temp_data['all'] = json.dumps(person, indent=4)
         # name
         temp_data['name'] = person['Name']
+        # states team
+        temp_data['team'] = person['States']['TeamNumber']
         # sweeps
         temp_data['Friday_sweeps'] = person['Friday_sweeps']
         temp_data['Friday_sweeps_calculation'] = json.dumps(person['Friday_sweeps_calculation'], indent=4, sort_keys=True)
-        # temp_data['Friday_sweeps_no_prez'] = person['Friday_sweeps_no_prez']
+        temp_data['States_sweeps'] = person['States_sweeps']
+        temp_data['States'] = json.dumps(person['States'], indent=4, sort_keys=True)
         # worksheets
         if 'Worksheets' in person:
             temp_data['worksheets'] = person['Worksheets']['total']
@@ -96,8 +99,10 @@ def get_data(level, data):
         if 'Rankings' in person:
             temp_data['friday_rank'] = int(person['Rankings']['friday_rank'])
             temp_data['saturday_rank'] = int(person['Rankings']['saturday_rank'])
+            temp_data['states_rank'] = int(person['Rankings']['states_rank'])
             temp_data['total_rank'] = int(person['Rankings']['total_rank'])
             temp_data['adjusted_Friday_sweeps'] = person['adjusted_Friday_sweeps']
+            temp_data['adjusted_States_sweeps'] = person['adjusted_States_sweeps']
         # challenge matches
         if 'Challenge_Matches' in person:
             temp_data['challenge_matches'] = json.dumps(person['Challenge_Matches'], indent=4, sort_keys=True)
