@@ -1,6 +1,5 @@
 import csv
 import numpy as np
-from scipy.stats import linregress
 import json
 
 import pprint
@@ -18,8 +17,8 @@ players = {
     "Elementary": []
 }
 
-PREZ_TOURNAMENT_DAYS = ["28-Sep_1", "5-Oct_2", "12-Oct_1", "26-Oct_1", "2-Nov_2", "9-Nov_1", "16-Nov_2", "30-Nov_1", "14-Dec_2", "21-Dec_1", "11-Jan_2"]
-SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
+PREZ_TOURNAMENT_DAYS = ["27-Sep_1", "4-Oct_2", "11-Oct_1", "18-Oct_2", "25-Oct_1", "1-Nov_2", "8-Nov_1", "15-Nov_2", "6-Dec_1", "13-Dec_2", "20-Dec_1", "10-Jan_2"]
+SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
 CUBE_GAMES = ['EQ', 'OS', 'Ling']
 
 HIGHEST_PREZ_ELEMENTARY = 0
@@ -269,10 +268,10 @@ def split_into_divisions():
 
 ################################################################################
 # Main
-get_saturday_tournament_data('2018-2019/saturday_tournaments.csv')
-get_prez_progression('2018-2019/prez_progression.csv')
-get_cube_game_scores('2018-2019/individual_rankings.csv')
-get_rankings('2018-2019/rankings.csv')
+get_saturday_tournament_data('2019-2020/saturday_tournaments.csv')
+get_prez_progression('2019-2020/prez_progression.csv')
+get_cube_game_scores('2019-2020/individual_rankings.csv')
+get_rankings('2019-2020/rankings.csv')
 
 clean_data()
 split_into_divisions()
