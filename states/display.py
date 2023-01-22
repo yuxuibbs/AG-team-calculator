@@ -109,7 +109,7 @@ def elementary():
     with open('data.json') as f:
         data = json.load(f)
     person_data = get_data('Elementary', data)
-    return render_template('display.html', level="Elementary" , data=person_data)
+    return render_template('display.html', level="Elementary", data=person_data)
 
 @app.route('/middle')
 def middle():

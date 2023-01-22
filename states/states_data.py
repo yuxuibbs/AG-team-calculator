@@ -17,7 +17,10 @@ players = {
     "Elementary": []
 }
 
-PREZ_TOURNAMENT_DAYS = ["27-Sep_1", "4-Oct_2", "11-Oct_1", "18-Oct_2", "25-Oct_1", "1-Nov_2", "8-Nov_1", "15-Nov_2", "6-Dec_1", "13-Dec_2", "20-Dec_1", "10-Jan_2"]
+PREZ_TOURNAMENT_DAYS = ['7-Oct_1', '14-Oct_2', '21-Oct_1', 
+                        '4-Nov_2', '11-Nov_1', '18-Nov_2', 
+                        '2-Dec_1', '9-Dec_2', '16-Dec_1', 
+                        '13-Jan_2', '20-Jan_1']
 SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
 CUBE_GAMES = ['EQ', 'OS', 'Ling']
 
@@ -35,15 +38,14 @@ def get_saturday_tournament_info(grade, playerName, month, data_type, data):
 
 def insert_saturday_tournament_data(row, grade):
     playerName = row['FirstName'] + " " + row['LastName']
-    qualified_players[grade][playerName] = {}
-    qualified_players[grade][playerName]['Name'] = playerName
-    qualified_players[grade][playerName]['Saturday_Tournaments'] = {}
-    for month in SATURDAY_TOURNAMENT_MONTHS:
-        if row[month]:
-            qualified_players[grade][playerName]['Saturday_Tournaments'][month] = {}
-            get_saturday_tournament_info(grade, playerName, month, 'score', int(row[month]))
-            get_saturday_tournament_info(grade, playerName, month, 'table', int(row[month + 'Table']))
-            get_saturday_tournament_info(grade, playerName, month, 'game', row[month + 'Game'])
+    if playerName in qualified_players[grade]:
+        qualified_players[grade][playerName]['Saturday_Tournaments'] = {}
+        for month in SATURDAY_TOURNAMENT_MONTHS:
+            if row[month]:
+                qualified_players[grade][playerName]['Saturday_Tournaments'][month] = {}
+                get_saturday_tournament_info(grade, playerName, month, 'score', int(row[month]))
+                get_saturday_tournament_info(grade, playerName, month, 'table', int(row[month + 'Table']))
+                get_saturday_tournament_info(grade, playerName, month, 'game', row[month + 'Game'])
 
 def get_saturday_tournament_data(input_file):
     with open(input_file) as f:
@@ -267,11 +269,25 @@ def split_into_divisions():
                 players['Middle'].append(person_data)
 
 ################################################################################
+# Misc
+def insert_qualified_players(row, grade):
+    playerName = row['FirstName'] + " " + row['LastName']
+    qualified_players[grade][playerName] = {}
+    qualified_players[grade][playerName]['Name'] = playerName
+def get_qualified_players(input_file):
+    with open(input_file) as f:
+        reader = csv.DictReader(f, delimiter=',')
+        for row in reader:
+            insert_qualified_players(row, int(row['Grade']))
+
+################################################################################
 # Main
-get_saturday_tournament_data('2019-2020/saturday_tournaments.csv')
-get_prez_progression('2019-2020/prez_progression.csv')
-get_cube_game_scores('2019-2020/individual_rankings.csv')
-get_rankings('2019-2020/rankings.csv')
+get_qualified_players('2022-2023/qualified_players.csv')
+
+get_saturday_tournament_data('2022-2023/saturday_tournaments.csv')
+get_prez_progression('2022-2023/prez_progression.csv')
+get_cube_game_scores('2022-2023/individual_rankings.csv')
+get_rankings('2022-2023/rankings.csv')
 
 clean_data()
 split_into_divisions()
