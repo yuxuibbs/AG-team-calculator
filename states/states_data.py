@@ -17,10 +17,13 @@ players = {
     "Elementary": []
 }
 
-PREZ_TOURNAMENT_DAYS = ['7-Oct_1', '14-Oct_2', '21-Oct_1', 
-                        '4-Nov_2', '11-Nov_1', '18-Nov_2', 
-                        '2-Dec_1', '9-Dec_2', '16-Dec_1', 
-                        '13-Jan_2', '20-Jan_1']
+PREZ_TOURNAMENT_DAYS = ['6-Oct_1', '20-Oct_2',
+    '3-Nov_1', '10-Nov_2',
+    '17-Nov_1', '1-Dec_2',
+    '8-Dec_1', '22-Dec_2',
+    '1_1', '2_2',
+    '3_1', '4_2',
+    '5_1', '6_2']
 SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
 CUBE_GAMES = ['EQ', 'OS', 'Ling']
 
@@ -32,7 +35,7 @@ HIGHEST_MEAN_TABLE_MIDDLE = 0
 HIGHEST_MEAN_TABLE_ELEMENTARY = 0
 
 ################################################################################
-# Saturday 
+# Saturday
 def get_saturday_tournament_info(grade, playerName, month, data_type, data):
     qualified_players[grade][playerName]['Saturday_Tournaments'][month][data_type] = data
 
@@ -55,7 +58,7 @@ def get_saturday_tournament_data(input_file):
 
 
 ################################################################################
-# Prez 
+# Prez
 def insert_prez_data(grade, playerName, date, score):
     qualified_players[grade][playerName]["Prez"][date] = score
 
@@ -109,7 +112,7 @@ def get_cube_game_scores(input_file):
         for row in reader:
             insert_friday_data(row, int(row['Grade']))
 
-#
+
 ###############################################################################
 # Rankings
 def get_rank_data(grade, playerName, rank_type, rank):
@@ -121,6 +124,7 @@ def insert_rank_data(row, grade):
         qualified_players[grade][playerName]["Rankings"] = {}
         get_rank_data(grade, playerName, 'saturday_rank', float(row['Saturdays']))
         get_rank_data(grade, playerName, 'friday_rank', float(row['Fridays']))
+        get_rank_data(grade, playerName, 'presidents_rank', float(row['Presidents']))
         get_rank_data(grade, playerName, 'total_rank', float(row['Total']))
 
 def get_rankings(input_file):
@@ -232,7 +236,7 @@ def calculate_sweeps(person_data, grade):
             scaled_score = (float(person_data['Prez']['prez_mean']) / HIGHEST_PREZ_MIDDLE) * 25
         person_data['Prez']['prez_scaled'] = scaled_score
         person_data['sweeps_calculation']['prez'] = scaled_score
-        person_data['sweeps'] += scaled_score 
+        person_data['sweeps'] += scaled_score
     if 'Rankings' in person_data:
         if grade == 6:
             person_data['adjusted_sweeps'] = \
@@ -282,12 +286,12 @@ def get_qualified_players(input_file):
 
 ################################################################################
 # Main
-get_qualified_players('2022-2023/qualified_players.csv')
+get_qualified_players('2023-2024/qualified_players.csv')
 
-get_saturday_tournament_data('2022-2023/saturday_tournaments.csv')
-get_prez_progression('2022-2023/prez_progression.csv')
-get_cube_game_scores('2022-2023/individual_rankings.csv')
-get_rankings('2022-2023/rankings.csv')
+get_saturday_tournament_data('2023-2024/saturday_tournaments.csv')
+get_prez_progression('2023-2024/prez_progression.csv')
+get_cube_game_scores('2023-2024/individual_rankings.csv')
+get_rankings('2023-2024/rankings.csv')
 
 clean_data()
 split_into_divisions()
