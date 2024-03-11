@@ -4,8 +4,8 @@ from PIL import Image
 players = pd.read_csv('2023-2024/qualified_players.csv')
 players['Name'] = players['FirstName'] + ' ' + players['LastName']
 
-for name in players['Name']:
-    player_name = name.replace(' ', '')
+def combine_player_info(row):
+    player_name = row['Name'].replace(' ', '')
     # Get images
     # all matches
     image1 = Image.open(f"2023-2024/raw_charts/{player_name}_all.png")
@@ -36,3 +36,10 @@ for name in players['Name']:
     stitched_image.paste(image5, (width1 + width2 + width4 + padding * 3, 0))
     # Save image
     stitched_image.save(f"2023-2024/charts_by_name/{player_name}.png")
+    if row['Grade'] == 6:
+        stitched_image.save(f"2023-2024/charts_by_name/elementary/{player_name}.png")
+    else:
+        stitched_image.save(f"2023-2024/charts_by_name/middle/{player_name}.png")
+
+
+players.apply(combine_player_info, axis=1)
