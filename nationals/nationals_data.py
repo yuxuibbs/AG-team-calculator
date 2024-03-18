@@ -1,9 +1,6 @@
 import csv
 import numpy as np
-from scipy.stats import linregress
 import json
-
-import pprint
 
 ################################################################################
 # Global variables
@@ -18,10 +15,12 @@ players = {
     "Elementary": []
 }
 
-WENT_TO_STATES = []
-
-PREZ_TOURNAMENT_DAYS = ["27-Sep_1", "4-Oct_2", "11-Oct_1", "18-Oct_2", "25-Oct_1", "1-Nov_2", "8-Nov_1", "15-Nov_2", "6-Dec_1", "13-Dec_2", "20-Dec_1", "10-Jan_2"]
-SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
+PREZ_TOURNAMENT_DAYS = ['6-Oct_1', '20-Oct_2',
+                        '3-Nov_1', '10-Nov_2', '17-Nov_1',
+                        '1-Dec_2', '8-Dec_1', '22-Dec_2',
+                        '26-Jan_1',
+                        '2-Feb_2', '23-Feb_2']
+SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
 CUBE_GAMES = ['EQ', 'OS', 'Ling']
 READING_GAMES = ['Prez', 'Prop']
 
@@ -37,21 +36,20 @@ HIGHEST_MEAN_TABLE_MIDDLE = 0
 HIGHEST_MEAN_TABLE_ELEMENTARY = 0
 
 ################################################################################
-# Saturday 
+# Saturday
 def get_saturday_tournament_info(grade, playerName, month, data_type, data):
     qualified_players[grade][playerName]['Saturday_Tournaments'][month][data_type] = data
 
 def insert_saturday_tournament_data(row, grade):
     playerName = row['FirstName'] + " " + row['LastName']
-    qualified_players[grade][playerName] = {}
-    qualified_players[grade][playerName]['Name'] = playerName
-    qualified_players[grade][playerName]['Saturday_Tournaments'] = {}
-    for month in SATURDAY_TOURNAMENT_MONTHS:
-        if row[month]:
-            qualified_players[grade][playerName]['Saturday_Tournaments'][month] = {}
-            get_saturday_tournament_info(grade, playerName, month, 'score', int(row[month]))
-            get_saturday_tournament_info(grade, playerName, month, 'table', int(row[month + 'Table']))
-            get_saturday_tournament_info(grade, playerName, month, 'game', row[month + 'Game'])
+    if playerName in qualified_players[grade]:
+        qualified_players[grade][playerName]['Saturday_Tournaments'] = {}
+        for month in SATURDAY_TOURNAMENT_MONTHS:
+            if row[month]:
+                qualified_players[grade][playerName]['Saturday_Tournaments'][month] = {}
+                get_saturday_tournament_info(grade, playerName, month, 'score', int(row[month]))
+                get_saturday_tournament_info(grade, playerName, month, 'table', int(row[month + 'Table']))
+                get_saturday_tournament_info(grade, playerName, month, 'game', row[month + 'Game'])
 
 def get_saturday_tournament_data(input_file):
     with open(input_file) as f:
@@ -96,6 +94,8 @@ def insert_friday_data(row, grade):
                 for i in range(1, 6):
                     if len(row[game + str(i)]) > 0:
                         get_friday_info(grade, playerName, 'Friday_Tournaments', game, row[game + str(i)])
+        qualified_players[grade][playerName]['Friday_Tournaments']['Prop_final'] = [row.get('Prop1'), row.get('Prop2')]
+        qualified_players[grade][playerName]['Friday_Tournaments']['Prez_final'] = [row.get('Pres')]
         # Challenge Matches
         qualified_players[grade][playerName]['Challenge_Matches'] = {}
         for game in CUBE_GAMES:
@@ -124,24 +124,28 @@ def insert_states_data(row, grade):
     playerName = row['FirstName'] + " " + row['LastName']
     if playerName in qualified_players[grade]:
         qualified_players[grade][playerName]['States'] = {}
-        for game in CUBE_GAMES + ['Wff']:
+        for game in CUBE_GAMES:
             qualified_players[grade][playerName]['States'][game] = []
             for i in range(1, 5):
                 if len(row[game + str(i)]) > 0:
                     get_states_info(grade, playerName, 'States', game, row[game + str(i)])
         for game in READING_GAMES:
             qualified_players[grade][playerName]['States'][game] = []
-            for i in range(1, 3):
-                if len(row[game + str(i)]) > 0:
-                    get_states_info(grade, playerName, 'States', game, row[game + str(i)])
+            get_states_info(grade, playerName, 'States', game, row[game + '_total'])
+            # for i in range(1, 3):
+            #     if len(row[game + str(i)]) > 0:
+            #         get_states_info(grade, playerName, 'States', game, row[game + str(i)])
         qualified_players[grade][playerName]['States']['TableAdjustment'] = float(row['TableAdjustment'])
-        qualified_players[grade][playerName]['States']['TeamNumber'] = int(row['Team'])
+        qualified_players[grade][playerName]['States']['TeamNumber'] = row['Team']
+        # qualified_players[grade][playerName]['States']['TeamNumber'] = int(row['Team'])
 
 def get_states_data(input_file):
     with open(input_file) as f:
         reader = csv.DictReader(f, delimiter=',')
         for row in reader:
-            insert_states_data(row, int(row['Grade']))
+            grade = get_person_grade(row)
+            if grade:
+                insert_states_data(row, grade)
 
 
 ###############################################################################
@@ -216,13 +220,13 @@ def clean_saturday_data(person_data, grade):
                 if saturday_tournament_data_name == 'table':
                     saturday_tables.append(saturday_tournament_data)
     person_data['Saturday_Tournaments']['saturday_scores'] = saturday_scores
-    person_data['Saturday_Tournaments']['saturday_mean_score'] = float(np.mean(saturday_scores))
+    person_data['Saturday_Tournaments']['saturday_mean_score'] = round(float(np.mean(saturday_scores)), 4)
     person_data['Saturday_Tournaments']['saturday_tables'] = saturday_tables
-    person_data['Saturday_Tournaments']['saturday_mean_table'] = float(np.mean(saturday_tables))
+    person_data['Saturday_Tournaments']['saturday_mean_table'] = round(float(np.mean(saturday_tables)), 4)
     person_data['Saturday_Tournaments']['num_sat_tournaments'] = len(saturday_scores)
     person_data['Saturday_Tournaments']['saturday_top_3'] = int(np.sum(sorted(saturday_scores, reverse=True)[:3]))
-    person_data['Saturday_Tournaments']['saturday_top_3_mean'] = float(np.mean(sorted(saturday_scores, reverse=True)[:3]))
-    mean_table = person_data['Saturday_Tournaments']['saturday_mean_table']
+    person_data['Saturday_Tournaments']['saturday_top_3_mean'] = round(float(np.mean(sorted(saturday_scores, reverse=True)[:3])), 4)
+    mean_table = round(person_data['Saturday_Tournaments']['saturday_mean_table'], 4)
     if grade == 6:
         if HIGHEST_MEAN_TABLE_ELEMENTARY < mean_table:
             HIGHEST_MEAN_TABLE_ELEMENTARY = mean_table
@@ -243,7 +247,7 @@ def clean_prez_data(person_data, grade):
         else:
             second_half.append(prez_score)
     person_data['Prez']['prez_scores'] = prez_scores
-    person_data['Prez']['prez_mean'] = float(np.mean(prez_scores))
+    person_data['Prez']['prez_mean'] = round(float(np.mean(prez_scores)), 4)
     person_data['Prez']['prez_total'] = int(np.sum(prez_scores))
     person_data['Prez']['prez_first_half'] = first_half
     person_data['Prez']['prez_second_half'] = second_half
@@ -261,7 +265,7 @@ def clean_friday_data(person_data):
             person_data['Friday_Tournaments'][game + '_num_matches'] = len(data)
             person_data['Friday_Tournaments'][game + '_total'] = int(np.sum(data))
             if len(data) > 0:
-                person_data['Friday_Tournaments'][game + '_mean'] = float(np.mean(data))
+                person_data['Friday_Tournaments'][game + '_mean'] = round(float(np.mean(data)), 4)
             else:
                 person_data['Friday_Tournaments'][game + '_mean'] = 0
 
@@ -289,12 +293,12 @@ def calculate_sweeps(person_data, grade):
     # Prez
     # scale to 25 relative to highest score
     if grade == 6:
-        scaled_score = (float(person_data['Prez']['prez_mean']) / HIGHEST_PREZ_ELEMENTARY) * 25
+        scaled_score = round((float(person_data['Prez']['prez_mean']) / HIGHEST_PREZ_ELEMENTARY) * 25, 4)
     else:
-        scaled_score = (float(person_data['Prez']['prez_mean']) / HIGHEST_PREZ_MIDDLE) * 25
+        scaled_score = round((float(person_data['Prez']['prez_mean']) / HIGHEST_PREZ_MIDDLE) * 25, 4)
     person_data['Prez']['prez_scaled'] = scaled_score
     person_data['Friday_sweeps_calculation']['prez'] = scaled_score
-    person_data['Friday_sweeps'] += scaled_score 
+    person_data['Friday_sweeps'] += scaled_score
     # Rankings
     if grade == 6:
         person_data['adjusted_Friday_sweeps'] = \
@@ -310,15 +314,15 @@ def calculate_sweeps(person_data, grade):
             (person_data['Saturday_Tournaments']['saturday_top_3_mean'])
     # States
     if grade == 6:
-        person_data['States']['states_prez_scaled'] = (float(person_data['States']['states_prez_total']) / HIGHEST_STATES_PREZ_ELEMENTARY) * 25
-        person_data['States']['states_prop_scaled'] = (float(person_data['States']['states_prop_total']) / HIGHEST_STATES_PROP_ELEMENTARY) * 25
+        person_data['States']['states_prez_scaled'] = round((float(person_data['States']['states_prez_total']) / HIGHEST_STATES_PREZ_ELEMENTARY) * 25, 4)
+        person_data['States']['states_prop_scaled'] = round((float(person_data['States']['states_prop_total']) / HIGHEST_STATES_PROP_ELEMENTARY) * 25, 4)
     else:
-        person_data['States']['states_prez_scaled'] = (float(person_data['States']['states_prez_total']) / HIGHEST_STATES_PREZ_MIDDLE) * 25
-        person_data['States']['states_prop_scaled'] = (float(person_data['States']['states_prop_total']) / HIGHEST_STATES_PROP_MIDDLE) * 25
-    person_data['States_sweeps'] = person_data['States']['states_prez_scaled']
+        person_data['States']['states_prez_scaled'] = round((float(person_data['States']['states_prez_total']) / HIGHEST_STATES_PREZ_MIDDLE) * 25, 4)
+        person_data['States']['states_prop_scaled'] = round((float(person_data['States']['states_prop_total']) / HIGHEST_STATES_PROP_MIDDLE) * 25, 4)
+    person_data['States_sweeps'] = round(person_data['States']['states_prez_scaled'], 4)
     person_data['States_sweeps_scores'] = []
     # sweeps top 3 games + prez
-    for game in CUBE_GAMES + ['states_prop_scaled']:
+    for game in CUBE_GAMES + ['states_prop_scaled', 'states_prez_scaled']:
         temp_tup = (float(np.sum(person_data['States'][game])), game)
         person_data['States_sweeps_scores'].append(temp_tup)
     person_data['States_sweeps_scores'] = sorted(person_data['States_sweeps_scores'], reverse=True)
@@ -360,24 +364,36 @@ def split_into_divisions():
                 players['Elementary'].append(person_data)
             else:
                 players['Middle'].append(person_data)
-
+################################################################################
+# Misc
+def insert_qualified_players(row, grade):
+    playerName = row['FirstName'] + " " + row['LastName']
+    qualified_players[grade][playerName] = {}
+    qualified_players[grade][playerName]['Name'] = playerName
+def get_qualified_players(input_file):
+    with open(input_file) as f:
+        reader = csv.DictReader(f, delimiter=',')
+        for row in reader:
+            insert_qualified_players(row, int(row['Grade']))
+def get_person_grade(row):
+    for grade in qualified_players:
+        for person in qualified_players[grade]:
+            if person == row['FirstName'] + " " + row['LastName']:
+                return grade
 ################################################################################
 # Main
-get_saturday_tournament_data('2019-2020/saturday_tournaments.csv')
-get_prez_progression('2019-2020/prez_progression.csv')
-get_cube_game_scores('2019-2020/friday_tournaments.csv')
-get_rankings('2019-2020/rankings.csv')
-get_states_data('2019-2020/states.csv')
+get_qualified_players('2023-2024/qualified_players.csv')
+
+get_saturday_tournament_data('2023-2024/saturday_tournaments.csv')
+get_prez_progression('2023-2024/prez_progression.csv')
+get_cube_game_scores('2023-2024/friday_tournaments.csv')
+get_rankings('2023-2024/rankings.csv')
+get_states_data('2023-2024/states.csv')
 
 keep_states_participants()
 
 clean_data()
 split_into_divisions()
 
-# pprint.pprint(qualified_players)
-# with open('data.js', 'w') as f:
-#     print('var player_data = ', file=f)
-#     json.dump(players, f)
-#     print(';', file=f)
 with open('data.json', 'w') as f:
     json.dump(players, f)

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for
 import json
 
-SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan']
+SATURDAY_TOURNAMENT_MONTHS = ['Sept', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hardtoguessstring'
